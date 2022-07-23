@@ -1,1 +1,19 @@
-// TODO
+@import '../../styles/media-query.scss';
+
+.container {
+  background-color: var(--background);
+
+  @include xs {
+    padding: 24px 16px;
+  }
+
+  @include md {
+    padding: 40px 60px;
+  }
+
+  .content {
+    width: 100%;
+    max-width: 700px;
+    margin: 0 auto;
+  }
+}
