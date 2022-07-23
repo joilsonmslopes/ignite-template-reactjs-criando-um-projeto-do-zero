@@ -31,7 +31,7 @@ $screen-xl-min: 1920px;
 }
 
 @mixin xl {
-  @media screen and (min-width: #{$screen-xl-min}) and (max-width: #{$screen-xl-max}) {
+  @media screen and (min-width: #{$screen-xl-min}) {
     @content;
   }
 }
