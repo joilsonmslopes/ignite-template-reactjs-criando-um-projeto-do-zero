@@ -81,7 +81,7 @@ export default function Post({ post }: PostProps): JSX.Element {
             {`${relatedReadTime} min`}
           </p>
         </div>
-        <div className={styles.content}>
+        <section className={styles.content}>
           {post.data.content.map(contentItem => {
             return (
               <article key={contentItem.heading}>
@@ -95,7 +95,7 @@ export default function Post({ post }: PostProps): JSX.Element {
               </article>
             );
           })}
-        </div>
+        </section>
         <div className={styles.linkWrapper}>
           <NextLink href="/" passHref>
             <a className={styles.link}>Voltar para home</a>

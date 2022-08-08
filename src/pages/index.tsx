@@ -3,7 +3,6 @@ import { GetStaticProps } from 'next';
 import { Button } from '../components/Button';
 import { PostCard } from '../components/PostCard';
 import { getPrismicClient } from '../services/prismic';
-// import commonStyles from '../styles/common.module.scss';
 import styles from './home.module.scss';
 
 interface Post {
@@ -29,8 +28,10 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   const [posts, setPosts] = useState<Post[]>(postsPagination.results);
   const [nextPage, setNextPage] = useState(postsPagination.next_page);
   const [currentPage, setCurrentPage] = useState(1);
+  const [isLoading, setIsLoading] = useState(false);
 
   const getPostPagination = async (): Promise<void> => {
+    setIsLoading(true);
     if (currentPage !== 1 && !nextPage) {
       return;
     }
@@ -50,6 +51,7 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     setPosts([...posts, ...newPosts]);
     setCurrentPage(data.page);
     setNextPage(data.next_page);
+    setIsLoading(false);
   };
 
   return (
@@ -58,11 +60,20 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
         {posts.map(post => (
           <PostCard key={post.uid} post={post} />
         ))}
-        {nextPage && (
-          <Button onGetPostPagination={getPostPagination}>
-            Carregar mais posts
-          </Button>
-        )}
+        {nextPage &&
+          (isLoading ? (
+            <div className={styles.loadingWrapper}>
+              <div className={styles.loading}>
+                <div />
+                <div />
+                <div />
+              </div>
+            </div>
+          ) : (
+            <Button onGetPostPagination={getPostPagination}>
+              Carregar mais posts
+            </Button>
+          ))}
       </main>
     </section>
   );

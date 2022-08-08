@@ -1,4 +1,4 @@
-import NextLink from 'next/link';
+import Link from 'next/link';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { FiCalendar, FiUser } from 'react-icons/fi';
@@ -21,7 +21,7 @@ interface PostCardProps {
 export const PostCard = ({ post }: PostCardProps): JSX.Element => {
   return (
     <div className={styles.card}>
-      <NextLink href={`/post/${post.uid}`}>
+      <Link href={`/post/${encodeURIComponent(post.uid)}`} passHref>
         <a>
           <h2>{post.data.title}</h2>
           <p className={styles.subtitle}>{post.data.subtitle}</p>
@@ -42,7 +42,7 @@ export const PostCard = ({ post }: PostCardProps): JSX.Element => {
             </p>
           </div>
         </a>
-      </NextLink>
+      </Link>
     </div>
   );
 };
