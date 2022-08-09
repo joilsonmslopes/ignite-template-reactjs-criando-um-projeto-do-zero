@@ -44,11 +44,20 @@
 
     a {
       color: var(--highlight);
+      transition: opacity 0.2s;
+
+      &:hover {
+        opacity: 0.8;
+        text-decoration: underline;
+      }
     }
 
     .linkWrapper {
       width: 100%;
+      display: inline-block;
       text-align: right;
+      padding: 0 8px;
+      margin-top: 24px;
 
       a {
         display: block;
@@ -90,6 +99,36 @@
       &:first-child em:first-child {
         display: block;
         margin-bottom: 16px;
+      }
+    }
+
+    .previousOrNextPost {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 16px 0;
+      padding: 0 8px;
+      width: 100%;
+
+      .button {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+
+        &.right {
+          text-align: right;
+        }
+
+        & span {
+          display: block;
+          font-size: 1rem;
+          margin-bottom: 8px;
+          color: var(--heading);
+
+          @include md() {
+            font-size: 1.125rem;
+          }
+        }
       }
     }
   }
