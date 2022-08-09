@@ -7,10 +7,12 @@ import { FiCalendar } from 'react-icons/fi';
 import { FiClock } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 import { RichText } from 'prismic-dom';
+import { useEffect } from 'react';
 import { getPrismicClient } from '../../services/prismic';
 import styles from './post.module.scss';
 
 interface Post {
+  uid?: string;
   first_publication_date: string | null;
   data: {
     title: string;
@@ -29,15 +31,19 @@ interface Post {
 
 interface PostProps {
   post: Post;
+  posts: Post[];
 }
 
-export default function Post({ post }: PostProps): JSX.Element {
+export default function Post({ post, posts }: PostProps): JSX.Element {
   const router = useRouter();
 
-  if (process.browser) {
-    const utterances = document.querySelector('.utterances');
-    if (!utterances) {
+  useEffect(() => {
+    if (process.browser) {
+      const utterances = document.querySelector('.utterances');
       const script = document.createElement('script');
+
+      const body = document.querySelector('body');
+
       script.setAttribute('async', '');
       script.setAttribute('src', 'https://utteranc.es/client.js');
       script.setAttribute(
@@ -48,15 +54,39 @@ export default function Post({ post }: PostProps): JSX.Element {
       script.setAttribute('theme', 'github-dark');
       script.setAttribute('crossOrigin', 'anonymous');
 
-      const body = document.querySelector('body');
-
       body.appendChild(script);
+
+      if (utterances) {
+        body.removeChild(utterances);
+        body.appendChild(script);
+      }
     }
-  }
+  }, [router.asPath]);
 
   if (router.isFallback) {
     return <h1>Carregando...</h1>;
   }
+
+  const postPathParam = router.asPath?.split('/')[2];
+
+  const postsInfo = posts?.map(postInfo => ({
+    slug: postInfo.uid,
+    title: postInfo.data.title,
+  }));
+
+  const postIndex = postsInfo?.findIndex(item => item.slug === postPathParam);
+
+  const currentPost = postsInfo?.find(
+    (_, index) => index === Math.max(postIndex)
+  );
+
+  const previousPost = postsInfo?.find(
+    (_, index) => index === Math.max(postIndex - 1, 0)
+  );
+
+  const nextPost = postsInfo?.find(
+    (_, index) => index === Math.min(postIndex + 1, postsInfo.length - 1)
+  );
 
   const wordsPerContent = post.data.content.reduce((total, content): number => {
     const headingTotalWords = content.heading.split(' ').length;
@@ -116,6 +146,30 @@ export default function Post({ post }: PostProps): JSX.Element {
             );
           })}
         </section>
+        <div className={styles.previousOrNextPost}>
+          {previousPost?.slug !== currentPost?.slug ? (
+            <div className={styles.button}>
+              <NextLink href={`/post/${previousPost?.slug}`} passHref>
+                <a className={styles.link}>
+                  <span>{previousPost?.title}</span>
+                  Post anterior
+                </a>
+              </NextLink>
+            </div>
+          ) : (
+            <div />
+          )}
+          {nextPost?.slug !== currentPost?.slug && (
+            <div className={`${styles.button} ${styles.right}`}>
+              <NextLink href={`/post/${nextPost?.slug}`} passHref>
+                <a className={styles.link}>
+                  <span>{nextPost?.title}</span>
+                  Próximo post
+                </a>
+              </NextLink>
+            </div>
+          )}
+        </div>
         <div className={styles.linkWrapper}>
           <NextLink href="/" passHref>
             <a className={styles.link}>Voltar para home</a>
@@ -130,7 +184,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const prismic = getPrismicClient();
   const posts = await prismic.getByType('publication');
 
-  const pathsResult = posts.results.map(post => {
+  const paths = posts.results.map(post => {
     return {
       params: {
         slug: post.uid,
@@ -139,7 +193,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   });
 
   return {
-    paths: pathsResult,
+    paths,
     fallback: true,
   };
 };
@@ -149,6 +203,8 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   const prismic = getPrismicClient();
 
   const response = await prismic.getByUID('publication', String(slug));
+
+  const posts = (await prismic.getByType('publication')).results;
 
   const post = {
     uid: response.uid,
@@ -170,6 +226,7 @@ export const getStaticProps: GetStaticProps = async ({ params }) => {
   return {
     props: {
       post,
+      posts,
     },
     revalidate: 60 * 60, // 1 hour
   };
