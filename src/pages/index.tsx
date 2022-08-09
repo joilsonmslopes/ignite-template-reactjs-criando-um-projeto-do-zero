@@ -54,6 +54,15 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
     setIsLoading(false);
   };
 
+  if (process.browser) {
+    const utterances = document.querySelector('.utterances');
+    const body = document.querySelector('body');
+
+    if (utterances) {
+      body.removeChild(utterances);
+    }
+  }
+
   return (
     <section className={styles.container}>
       <main>

@@ -34,6 +34,26 @@ interface PostProps {
 export default function Post({ post }: PostProps): JSX.Element {
   const router = useRouter();
 
+  if (process.browser) {
+    const utterances = document.querySelector('.utterances');
+    if (!utterances) {
+      const script = document.createElement('script');
+      script.setAttribute('async', '');
+      script.setAttribute('src', 'https://utteranc.es/client.js');
+      script.setAttribute(
+        'repo',
+        'joilsonmslopes/ignite-template-reactjs-criando-um-projeto-do-zero'
+      );
+      script.setAttribute('issue-term', 'url');
+      script.setAttribute('theme', 'github-dark');
+      script.setAttribute('crossOrigin', 'anonymous');
+
+      const body = document.querySelector('body');
+
+      body.appendChild(script);
+    }
+  }
+
   if (router.isFallback) {
     return <h1>Carregando...</h1>;
   }
