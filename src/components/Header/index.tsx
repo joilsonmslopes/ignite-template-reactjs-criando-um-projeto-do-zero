@@ -1,11 +1,11 @@
 import NextLink from 'next/link';
 import styles from './header.module.scss';
 
-export const Header = () => {
+export default function Header(): JSX.Element {
   return (
     <header className={styles.container}>
       <div className={styles.content}>
-        <NextLink href="/">
+        <NextLink href="/" passHref>
           <a>
             <img src="/assets/logo.svg" alt="logo" />
           </a>
@@ -13,4 +13,4 @@ export const Header = () => {
       </div>
     </header>
   );
-};
+}
