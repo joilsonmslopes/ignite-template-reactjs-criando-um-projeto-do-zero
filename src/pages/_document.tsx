@@ -16,12 +16,17 @@ export default class MyDocument extends Document {
     return initialProps;
   }
 
-  render() {
+  render(): JSX.Element {
     return (
       <Html>
         <Head>
           <link rel="preconnect" href="https://fonts.googleapis.com" />
           <link rel="preconnect" href="https://fonts.gstatic.com" />
+          <link
+            rel="shortcut icon"
+            href="assets/favicon.png"
+            type="image/png"
+          />
           <link
             href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap"
             rel="stylesheet"

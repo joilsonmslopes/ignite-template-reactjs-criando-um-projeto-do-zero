@@ -8,6 +8,7 @@ import { FiClock } from 'react-icons/fi';
 import { FiUser } from 'react-icons/fi';
 import { RichText } from 'prismic-dom';
 import { useEffect } from 'react';
+import Head from 'next/head';
 import { getPrismicClient } from '../../services/prismic';
 import styles from './post.module.scss';
 
@@ -108,75 +109,80 @@ export default function Post({ post, posts }: PostProps): JSX.Element {
   );
 
   return (
-    <div className={styles.container}>
-      <div className={styles.image}>
-        <img src={post.data.banner.url} alt={post.data.title} />
-      </div>
+    <>
+      <Head>
+        <title>{post.data.title} | Spacetraveling</title>
+      </Head>
+      <div className={styles.container}>
+        <div className={styles.image}>
+          <img src={post.data.banner.url} alt={post.data.title} />
+        </div>
 
-      <div className={styles.content}>
-        <h1>{post.data.title}</h1>
-        <div className={styles.postCreationInfo}>
-          <time>
-            <FiCalendar />
-            {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
-              locale: ptBR,
+        <div className={styles.content}>
+          <h1>{post.data.title}</h1>
+          <div className={styles.postCreationInfo}>
+            <time>
+              <FiCalendar />
+              {format(new Date(post.first_publication_date), 'dd MMM yyyy', {
+                locale: ptBR,
+              })}
+            </time>
+            <p>
+              <FiUser />
+              {post.data.author}
+            </p>
+            <p>
+              <FiClock />
+              {`${relatedReadTime} min`}
+            </p>
+          </div>
+          <section className={styles.content}>
+            {post.data.content.map(contentItem => {
+              return (
+                <article key={contentItem.heading}>
+                  <h2>{contentItem.heading}</h2>
+                  <div
+                    // eslint-disable-next-line react/no-danger
+                    dangerouslySetInnerHTML={{
+                      __html: RichText.asHtml(contentItem.body),
+                    }}
+                  />
+                </article>
+              );
             })}
-          </time>
-          <p>
-            <FiUser />
-            {post.data.author}
-          </p>
-          <p>
-            <FiClock />
-            {`${relatedReadTime} min`}
-          </p>
-        </div>
-        <section className={styles.content}>
-          {post.data.content.map(contentItem => {
-            return (
-              <article key={contentItem.heading}>
-                <h2>{contentItem.heading}</h2>
-                <div
-                  // eslint-disable-next-line react/no-danger
-                  dangerouslySetInnerHTML={{
-                    __html: RichText.asHtml(contentItem.body),
-                  }}
-                />
-              </article>
-            );
-          })}
-        </section>
-        <div className={styles.previousOrNextPost}>
-          {previousPost?.slug !== currentPost?.slug ? (
-            <div className={styles.button}>
-              <NextLink href={`/post/${previousPost?.slug}`} passHref>
-                <a className={styles.link}>
-                  <span>{previousPost?.title}</span>
-                  Post anterior
-                </a>
-              </NextLink>
-            </div>
-          ) : (
-            <div />
-          )}
-          {nextPost?.slug !== currentPost?.slug && (
-            <div className={`${styles.button} ${styles.right}`}>
-              <NextLink href={`/post/${nextPost?.slug}`} passHref>
-                <a className={styles.link}>
-                  <span>{nextPost?.title}</span>
-                  Próximo post
-                </a>
-              </NextLink>
-            </div>
-          )}
-        </div>
-        <div className={styles.linkWrapper}>
-          <NextLink href="/" passHref>
-            <a className={styles.link}>Voltar para home</a>
-          </NextLink>
+          </section>
+          <div className={styles.previousOrNextPost}>
+            {previousPost?.slug !== currentPost?.slug ? (
+              <div className={styles.button}>
+                <NextLink href={`/post/${previousPost?.slug}`} passHref>
+                  <a className={styles.link}>
+                    <span>{previousPost?.title}</span>
+                    Post anterior
+                  </a>
+                </NextLink>
+              </div>
+            ) : (
+              <div />
+            )}
+            {nextPost?.slug !== currentPost?.slug && (
+              <div className={`${styles.button} ${styles.right}`}>
+                <NextLink href={`/post/${nextPost?.slug}`} passHref>
+                  <a className={styles.link}>
+                    <span>{nextPost?.title}</span>
+                    Próximo post
+                  </a>
+                </NextLink>
+              </div>
+            )}
+          </div>
+          <div className={styles.linkWrapper}>
+            <NextLink href="/" passHref>
+              <a className={styles.link}>Voltar para home</a>
+            </NextLink>
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
