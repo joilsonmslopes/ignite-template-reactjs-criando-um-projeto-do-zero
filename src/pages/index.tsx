@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { GetStaticProps } from 'next';
+import Head from 'next/head';
 import { Button } from '../components/Button';
 import { PostCard } from '../components/PostCard';
 import { getPrismicClient } from '../services/prismic';
@@ -64,27 +65,32 @@ export default function Home({ postsPagination }: HomeProps): JSX.Element {
   }
 
   return (
-    <section className={styles.container}>
-      <main>
-        {posts.map(post => (
-          <PostCard key={post.uid} post={post} />
-        ))}
-        {nextPage &&
-          (isLoading ? (
-            <div className={styles.loadingWrapper}>
-              <div className={styles.loading}>
-                <div />
-                <div />
-                <div />
-              </div>
-            </div>
-          ) : (
-            <Button onGetPostPagination={getPostPagination}>
-              Carregar mais posts
-            </Button>
+    <>
+      <Head>
+        <title>Spacetraveling | home</title>
+      </Head>
+      <section className={styles.container}>
+        <main>
+          {posts.map(post => (
+            <PostCard key={post.uid} post={post} />
           ))}
-      </main>
-    </section>
+          {nextPage &&
+            (isLoading ? (
+              <div className={styles.loadingWrapper}>
+                <div className={styles.loading}>
+                  <div />
+                  <div />
+                  <div />
+                </div>
+              </div>
+            ) : (
+              <Button onGetPostPagination={getPostPagination}>
+                Carregar mais posts
+              </Button>
+            ))}
+        </main>
+      </section>
+    </>
   );
 }
 
