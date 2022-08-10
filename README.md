@@ -1,8 +1,8 @@
-<h1 align="center">
+<h1 align="center" style="background: #1a1a1a">
   <img alt="Spacetraveling" height="80" title="Spacetraveling" src="./public/assets/logo.svg" />
 </h1>
 
-![cover](./public/assets/spacetraveling-image.png)
+![cover](./public/assets/images/spacetraveling-image.png)
 
 ## Desafio 03 - Ignite (React)
 
