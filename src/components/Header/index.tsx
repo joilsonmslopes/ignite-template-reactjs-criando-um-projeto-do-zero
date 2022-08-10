@@ -1,7 +1,7 @@
 import NextLink from 'next/link';
 import styles from './header.module.scss';
 
-export const Header = (): JSX.Element => {
+export default function Header(): JSX.Element {
   return (
     <header className={styles.container}>
       <div className={styles.content}>
@@ -13,4 +13,4 @@ export const Header = (): JSX.Element => {
       </div>
     </header>
   );
-};
+}
